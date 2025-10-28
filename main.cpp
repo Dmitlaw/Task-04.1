@@ -29,20 +29,35 @@ public:
     int getFlat() {
         return this->flat;
     }
+
+    static void get_output_address (std::string fout, Address** arr, int n) {
+        std::ofstream fout1(fout);
+        if (!fout1) {
+            std::cerr << "Не удалось открыть файл out.txt";
+        }
+        else {
+            for (int i = n - 1; i >= 0; --i) {
+                fout1 << arr[i]->getCity() << " " << arr[i]->getStreet() << " " << arr[i]->getHouse() << " " << arr[i]->getFlat() << "\n";
+            }
+        }
+        fout1.close();
+    }
+
 };
 
 int main() {
 
     int n = 0;
-    Address** arr = new Address*[n];
+    std::string fout = "out.txt";
 
     std::ifstream fin("in.txt");
     if (!fin) {
         std::cerr << "Не удалось открыть файл in.txt";
         return 1;
     }
-
     fin >> n;
+
+    Address** arr = new Address*[n];
     fin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     std::cout << "Текст в файле in.txt: " << std::endl;
@@ -67,23 +82,18 @@ int main() {
     }
     fin.close();
 
-    std::ofstream fout("out.txt");
-    if (!fout) {
-        std::cerr << "Не удалось открыть файл out.txt";
-    }
-    fout << n << '\n';
+    Address::get_output_address(fout, arr, n);
 
-    std::cout << std::endl;
-    std::cout << "Текст в файле out.txt: " << std::endl;
-    for (int i = n - 1; i >= 0; --i) {
-        fout << arr[i]->getCity() << " " << arr[i]->getStreet() << " " << arr[i]->getHouse() << " " << arr[i]->getFlat() << "\n";
+    for (int i = 0; i < n; ++i) {
+    delete arr[i];
     }
-    fout.close();
+    delete[] arr;
 
     std::ifstream fin_out("out.txt");
-    if (!fin_out) { std::cerr << "Ошибка"; return 1; }
-
+    std::cout << std::endl;
+    std::cout << "Текст в файле out.txt: " << std::endl;
     std::cout << fin_out.rdbuf();
+    fin_out.close();
 
     return EXIT_SUCCESS;
 }
