@@ -34,6 +34,10 @@ public:
         std::ofstream fout1(fout);
         if (!fout1) {
             std::cerr << "Не удалось открыть файл out.txt";
+            for (int i = 0; i < n; ++i) {
+                delete arr[i];
+            }
+            delete[] arr;
         }
         else {
             for (int i = n - 1; i >= 0; --i) {
